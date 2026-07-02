@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>北美门前场景枚举 · 用户旅程探索器</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <h1>北美门前场景枚举</h1>
+      <p class="subtitle">全维度组合 · 点击展开用户旅程与痛点</p>
+
+      <div class="stat-box">
+        <span>理论全组合</span>
+        <strong id="total-all">—</strong>
+        <div class="formula" id="formula-text"></div>
+      </div>
+      <div class="stat-box">
+        <span>当前筛选结果</span>
+        <strong id="total-filtered">—</strong>
+      </div>
+
+      <label class="toggle-row">
+        <input type="checkbox" id="show-all" />
+        显示全部组合（含低关联）
+      </label>
+
+      <div class="filter-group">
+        <label>最低关联度 <span id="relevance-val">30</span></label>
+        <input type="range" id="min-relevance" min="0" max="90" step="5" value="30" />
+      </div>
+
+      <div class="filter-group">
+        <label>搜索</label>
+        <input type="text" id="search" placeholder="场景名、ID…" />
+      </div>
+
+      <div id="filters"></div>
+
+      <button class="btn btn-primary" id="btn-reset" type="button">重置筛选</button>
+    </aside>
+
+    <main class="main">
+      <div class="toolbar">
+        <h2>场景列表</h2>
+        <span class="result-info">点击卡片展开旅程详情 · 每页 40 条</span>
+      </div>
+
+      <div class="relevance-legend">
+        <span><span class="legend-dot" style="background:#22c55e"></span>高关联 ≥70</span>
+        <span><span class="legend-dot" style="background:#eab308"></span>中关联 45–69</span>
+        <span><span class="legend-dot" style="background:#ef4444"></span>低关联 &lt;45</span>
+      </div>
+
+      <div class="scenario-list" id="scenario-list">
+        <div class="loading">加载中…</div>
+      </div>
+
+      <div class="pagination">
+        <button type="button" id="btn-prev">上一页</button>
+        <span id="page-info">第 1 页</span>
+        <div class="page-jump">
+          <label for="page-input">跳至</label>
+          <input type="number" id="page-input" min="1" value="1" aria-label="页码" />
+          <span class="page-jump-suffix">页</span>
+          <button type="button" id="btn-go-page">跳转</button>
+        </div>
+        <button type="button" id="btn-next">下一页</button>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

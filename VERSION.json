@@ -1,0 +1,28 @@
+{
+  "name": "北美门前场景探索器",
+  "version": "1.1.0",
+  "savedAt": "2026-06-29",
+  "description": "全维度门前场景枚举 + 用户旅程 + 痛点展示",
+  "totalCombinations": 313600,
+  "dimensions": {
+    "person": 14,
+    "housingUsage": 5,
+    "moment": 8,
+    "residential": 8,
+    "event": 14,
+    "activity": 5
+  },
+  "entryPoint": "index.html",
+  "startScript": "启动.bat",
+  "url": "http://localhost:3456",
+  "files": [
+    "index.html",
+    "启动.bat",
+    "怎么打开.txt",
+    "README.md",
+    "css/styles.css",
+    "js/dimensions.js",
+    "js/generator.js",
+    "js/app.js"
+  ]
+}
