@@ -7,7 +7,6 @@ import {
   moments,
   residentials,
   events,
-  activities,
 } from './generator.js';
 import { DIMENSIONS } from './dimensions.js';
 
@@ -19,10 +18,9 @@ const state = {
     moment: [],
     residential: [],
     event: [],
-    activity: [],
     search: '',
   },
-  minRelevance: 30,
+  minRelevance: 40,
   showAll: false,
   page: 0,
   expandedId: null,
@@ -51,7 +49,7 @@ const el = {
 function init() {
   el.totalAll.textContent = TOTAL_COMBINATIONS.toLocaleString();
   document.getElementById('formula-text').innerHTML =
-    `<code>${persons.length}</code>人 × <code>${housingUsages.length}</code>用房 × <code>${moments.length}</code>时刻 × <code>${residentials.length}</code>住宅 × <code>${events.length}</code>事件 × <code>${activities.length}</code>活动`;
+    `<code>${persons.length}</code>人 × <code>${housingUsages.length}</code>用房 × <code>${moments.length}</code>时刻 × <code>${residentials.length}</code>住宅 × <code>${events.length}</code>事件`;
 
   buildFilterUI();
   bindEvents();
@@ -98,7 +96,6 @@ function buildFilterUI() {
     { key: 'moment', label: '时刻', items: moments },
     { key: 'residential', label: '住宅类型', items: residentials },
     { key: 'event', label: '事件', items: events },
-    { key: 'activity', label: '活动', items: activities },
   ];
 
   for (const cfg of configs) {
@@ -204,15 +201,15 @@ function goToPage(inputVal) {
 function resetFilters() {
   state.filters = {
     person: [], housingUsage: [], moment: [],
-    residential: [], event: [], activity: [], search: '',
+    residential: [], event: [], search: '',
   };
   state.page = 0;
   state.expandedId = null;
   state.showAll = false;
-  state.minRelevance = 30;
+  state.minRelevance = 40;
   el.showAllToggle.checked = false;
-  el.minRelevance.value = 30;
-  el.relevanceVal.textContent = '30';
+  el.minRelevance.value = 40;
+  el.relevanceVal.textContent = '40';
   el.search.value = '';
   document.querySelectorAll('.chip.active').forEach((c) => c.classList.remove('active'));
   render();
@@ -236,7 +233,7 @@ function renderCardHeader(s) {
     <div class="relevance-badge ${relevanceClass(s.relevance)}" title="关联度">${s.relevance}</div>
     <div class="card-main">
       <div class="card-title">${escapeHtml(s.title)}</div>
-      ${pain ? `<div class="card-top-pain" title="${escapeHtml(pain)}"><span class="pain-dot"></span><span class="pain-text">${escapeHtml(pain)}</span></div>` : ''}
+      ${pain ? `<div class="card-top-pain" title="${escapeHtml(pain)}"><span class="pain-dot"></span><span class="pain-label">可能问题</span><span class="pain-text">${escapeHtml(pain)}</span></div>` : ''}
     </div>
     <span class="card-id">${s.id}</span>
     <span class="chevron">▼</span>
@@ -245,78 +242,66 @@ function renderCardHeader(s) {
 
 function renderCardDetail(full) {
   const j = full.journey;
-  const p = j.persona;
 
-  const personaBlock = `
-    <div class="persona-card">
-      <h4>人物画像</h4>
-      <p class="persona-role">${escapeHtml(p.role)}</p>
-      <div class="persona-tags">
-        <span class="tag">凭证：${escapeHtml(p.credential)}</span>
-        ${p.goals.map((g) => `<span class="tag tag-goal">目标：${escapeHtml(g)}</span>`).join('')}
-      </div>
-      <p class="persona-traits">${escapeHtml(p.traits.join(' · '))}</p>
-    </div>`;
+  const goalsHtml = (j.goals || []).map((g) => `<li>${escapeHtml(g)}</li>`).join('');
 
-  const phasesBlock = j.phases
-    .map((ph) => {
-      const focusClass = ph.isFocus ? ' phase-focus' : '';
-      const stepsHtml = ph.steps
-        .map(
-          (st, i) => `
-          <div class="journey-step">
-            <div class="step-num">${i + 1}</div>
-            <div class="step-content">
-              <div class="step-row"><span class="step-label">行为</span>${escapeHtml(st.action)}</div>
-              <div class="step-row"><span class="step-label">触点</span>${escapeHtml(st.touchpoint)}</div>
-              <div class="step-row step-thought"><span class="step-label">内心</span>「${escapeHtml(st.thought)}」</div>
-              <div class="step-row step-friction"><span class="step-label">摩擦</span>${escapeHtml(st.friction)}</div>
-            </div>
-          </div>`
-        )
-        .join('');
-      return `
-        <div class="journey-phase${focusClass}">
-          <div class="phase-header">
-            <span class="phase-icon">${ph.icon}</span>
-            <div>
-              <span class="phase-title">${escapeHtml(ph.label)}</span>
-              ${ph.isFocus ? '<span class="phase-badge">当前时刻</span>' : ''}
-              <span class="phase-emotion">情绪：${ph.emotion}</span>
-            </div>
-          </div>
-          <p class="phase-goal">${escapeHtml(ph.goal)}</p>
-          <p class="phase-desc">${escapeHtml(ph.desc)}</p>
-          <div class="phase-steps">${stepsHtml}</div>
-        </div>`;
-    })
+  const stepsHtml = (j.journey?.steps || [])
+    .map(
+      (st, i) => `
+      <div class="journey-step">
+        <div class="step-num">${i + 1}</div>
+        <div class="step-content">
+          <div class="step-row"><span class="step-label">行为</span>${escapeHtml(st.action)}</div>
+          <div class="step-row"><span class="step-label">触点</span>${escapeHtml(st.touchpoint)}</div>
+          <div class="step-row step-thought"><span class="step-label">内心</span>「${escapeHtml(st.thought)}」</div>
+          <div class="step-row step-friction"><span class="step-label">麻烦点</span>${escapeHtml(st.friction)}</div>
+        </div>
+      </div>`
+    )
     .join('');
 
-  const pains = full.painPoints.map((pt) => `<li>${escapeHtml(pt)}</li>`).join('');
+  const beforeHtml = j.before
+    ? `<div class="adj-step"><span class="adj-label">前一步 · ${escapeHtml(j.before.label)}</span>${escapeHtml(j.before.brief)}</div>`
+    : '<div class="adj-step adj-empty">无（当前为旅程起点）</div>';
+
+  const afterHtml = j.after
+    ? `<div class="adj-step"><span class="adj-label">后一步 · ${escapeHtml(j.after.label)}</span>${escapeHtml(j.after.brief)}</div>`
+    : '<div class="adj-step adj-empty">无（当前为旅程终点）</div>';
+
+  const pains = (j.painPoints || full.painPoints || []).map((pt) => `<li>${escapeHtml(pt)}</li>`).join('');
+
+  const emo = j.emotion || { label: '—', reason: '' };
 
   return `
     <div class="card-meta">
       <span>${full.person.group} · ${full.person.name}</span>
       <span>${full.residential} / ${full.housingUsage}</span>
-      <span>整体情绪：${j.emotion.label}</span>
+      <span>${j.focusMoment} · ${full.event}</span>
     </div>
-    ${personaBlock}
-    <div class="detail-grid">
-      <div class="detail-section detail-section-full">
-        <h4>用户旅程（按时间节点）</h4>
-        <div class="context-tags">
-          ${full.event !== '日常' ? `<span class="tag">事件：${full.event}</span>` : ''}
-          ${full.activity !== '无特定活动' ? `<span class="tag">活动：${full.activity}</span>` : ''}
-          <span class="tag tag-focus">聚焦：${j.focusMoment}</span>
-        </div>
-        <div class="journey-phases">${phasesBlock}</div>
+    <div class="detail-sections">
+      <div class="detail-section">
+        <h4>1. 目标</h4>
+        <ul class="goal-list">${goalsHtml}</ul>
       </div>
       <div class="detail-section">
-        <h4>可能痛点</h4>
-        <ul class="pain-list">${pains}</ul>
+        <h4>2. 用户状态</h4>
+        <p class="user-state">${escapeHtml(j.userState || '')}</p>
       </div>
-      <div class="mot-box">
-        <strong>Moment of Truth：</strong>${escapeHtml(j.mot)}
+      <div class="detail-section detail-section-full">
+        <h4>3. 旅程图 <span class="section-sub">${escapeHtml(j.journey?.label || j.focusMoment)}</span></h4>
+        <div class="phase-steps">${stepsHtml}</div>
+      </div>
+      <div class="detail-section">
+        <h4>4. 情绪</h4>
+        <p class="emotion-block"><strong>${escapeHtml(emo.label)}</strong><span class="emotion-reason">${escapeHtml(emo.reason)}</span></p>
+      </div>
+      <div class="detail-section detail-section-full">
+        <h4>5. 前一步 / 后一步</h4>
+        <div class="adj-steps">${beforeHtml}${afterHtml}</div>
+      </div>
+      <div class="detail-section">
+        <h4>6. 可能痛点</h4>
+        <ul class="pain-list">${pains}</ul>
       </div>
     </div>
   `;
@@ -380,7 +365,7 @@ function render() {
   const minRel = state.showAll ? 0 : state.minRelevance;
 
   el.totalFiltered.textContent = '计算中…';
-  el.scenarioList.innerHTML = '<div class="loading">正在扫描组合…<br><small>共 31 万种可能，首次约需 3–8 秒</small></div>';
+  el.scenarioList.innerHTML = '<div class="loading">正在扫描组合…<br><small>共 8 万种可能，首次约需 1–3 秒</small></div>';
 
   state.cancelQuery = queryScenariosAsync(
     state.filters,

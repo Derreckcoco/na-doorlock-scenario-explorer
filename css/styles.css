@@ -255,6 +255,12 @@ body {
   line-height: 1.4;
 }
 
+.pain-label {
+  flex-shrink: 0;
+  color: #fca5a5;
+  font-weight: 600;
+}
+
 .pain-text {
   flex: 1;
   min-width: 0;
@@ -329,6 +335,96 @@ body {
   margin-top: 1rem;
 }
 
+.detail-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.detail-sections .detail-section {
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+}
+
+.detail-sections .detail-section-full {
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+.section-sub {
+  font-weight: 400;
+  color: var(--text-muted);
+  text-transform: none;
+  letter-spacing: 0;
+  margin-left: 0.35rem;
+}
+
+.goal-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.goal-list li { margin-bottom: 0.25rem; }
+
+.user-state {
+  font-size: 0.85rem;
+  line-height: 1.55;
+  margin: 0;
+  color: var(--text);
+}
+
+.emotion-block {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.emotion-block strong {
+  display: block;
+  color: var(--yellow);
+  margin-bottom: 0.35rem;
+  font-size: 0.95rem;
+}
+
+.emotion-reason {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.adj-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.adj-step {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  padding: 0.5rem 0.65rem;
+  background: var(--bg);
+  border-radius: 6px;
+  border: 1px dashed var(--border);
+}
+
+.adj-label {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-bottom: 0.2rem;
+  font-weight: 600;
+}
+
+.adj-empty {
+  color: var(--text-muted);
+  font-style: italic;
+  border-style: dotted;
+}
+
 @media (max-width: 900px) {
   .app { grid-template-columns: 1fr; }
   .sidebar { position: relative; max-height: none; }
@@ -381,7 +477,25 @@ body {
 .persona-role {
   font-size: 0.9rem;
   font-weight: 500;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.persona-context {
+  font-size: 0.78rem;
+  color: var(--accent);
+  margin-bottom: 0.35rem;
+  line-height: 1.4;
+}
+
+.persona-storyline {
+  font-size: 0.82rem;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+  line-height: 1.55;
+  padding: 0.5rem 0.65rem;
+  background: var(--surface2);
+  border-radius: 6px;
+  border-left: 3px solid var(--accent);
 }
 
 .persona-traits {
@@ -396,8 +510,52 @@ body {
 .journey-phases {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.35rem;
   margin-top: 0.75rem;
+}
+
+.journey-context-step {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  opacity: 0.85;
+}
+
+.context-role {
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  background: var(--surface2);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+
+.context-icon { font-size: 0.95rem; }
+
+.context-label {
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.context-brief {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.journey-arrow {
+  text-align: center;
+  color: var(--border);
+  font-size: 0.85rem;
+  line-height: 1;
 }
 
 .journey-phase {
