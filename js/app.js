@@ -229,10 +229,17 @@ function escapeHtml(str) {
 
 function renderCardHeader(s) {
   const pain = s.topPain || '';
+  const voiceBadge =
+    s.voiceCount > 0
+      ? `<span class="voice-badge" title="匹配到 ${s.voiceCount} 条北美用户声音">${s.voiceCount} 条用户声音</span>`
+      : '';
   return `
     <div class="relevance-badge ${relevanceClass(s.relevance)}" title="关联度">${s.relevance}</div>
     <div class="card-main">
-      <div class="card-title">${escapeHtml(s.title)}</div>
+      <div class="card-title-row">
+        <div class="card-title">${escapeHtml(s.title)}</div>
+        ${voiceBadge}
+      </div>
       ${pain ? `<div class="card-top-pain" title="${escapeHtml(pain)}"><span class="pain-dot"></span><span class="pain-label">可能问题</span><span class="pain-text">${escapeHtml(pain)}</span></div>` : ''}
     </div>
     <span class="card-id">${s.id}</span>
@@ -270,6 +277,28 @@ function renderCardDetail(full) {
 
   const pains = (j.painPoints || full.painPoints || []).map((pt) => `<li>${escapeHtml(pt)}</li>`).join('');
 
+  const voicesHtml = (full.userVoices || [])
+    .map(
+      (v) => `
+      <div class="voice-card">
+        <blockquote class="voice-quote">"${escapeHtml(v.quoteZh)}"</blockquote>
+        <p class="voice-original">${escapeHtml(v.quote)}</p>
+        <div class="voice-meta">
+          <span class="voice-level">${escapeHtml(evidenceLabel(v.evidenceLevel))}</span>
+          <span class="voice-source">${escapeHtml(v.source.label)}</span>
+          ${v.source.url ? `<a class="voice-link" href="${escapeHtml(v.source.url)}" target="_blank" rel="noopener">来源</a>` : ''}
+        </div>
+        <p class="voice-hint"><span>→ 能力方向</span>${escapeHtml(v.capabilityHint)}</p>
+      </div>`
+    )
+    .join('');
+
+  const capHtml = (full.capabilityHints || [])
+    .map(
+      (c) => `<span class="cap-chip" title="匹配主题: ${escapeHtml(c.overlap.join(', '))}">${escapeHtml(c.name)}</span>`
+    )
+    .join('');
+
   const emo = j.emotion || { label: '—', reason: '' };
 
   return `
@@ -303,8 +332,26 @@ function renderCardDetail(full) {
         <h4>6. 可能痛点</h4>
         <ul class="pain-list">${pains}</ul>
       </div>
+      <div class="detail-section detail-section-full">
+        <h4>7. 北美用户声音 <span class="section-sub">公开来源 · 非一手访谈</span></h4>
+        ${voicesHtml || '<p class="voice-empty">暂无匹配的用户声音条目，可持续补充 user-voice-data.js</p>'}
+      </div>
+      ${
+        capHtml
+          ? `<div class="detail-section detail-section-full"><h4>8. 能力域线索 <span class="section-sub">从用户声音归纳 · 通向能力地图 C</span></h4><div class="cap-chips">${capHtml}</div></div>`
+          : ''
+      }
     </div>
   `;
+}
+
+function evidenceLabel(level) {
+  const map = {
+    forum_quote: '社区原声',
+    review_theme: '评价主题',
+    survey_stat: '调研数据',
+  };
+  return map[level] || level;
 }
 
 function renderList(items) {

@@ -14,6 +14,7 @@ import {
 } from './dimensions.js';
 import { buildDetailedJourney, EVENT_CTX, RESIDENTIAL_CTX, HOUSING_CTX } from './journey-engine.js';
 import { composeListPreview } from './story-composer.js';
+import { countUserVoices, matchUserVoices, capabilityHintsForScenario } from './voice-matcher.js';
 
 const persons = flattenPersons();
 const housingUsages = DIMENSIONS.housingUsage.items;
@@ -118,16 +119,26 @@ export function buildScenarioLight(flatIndex) {
     relevance: relevanceCache[flatIndex],
   };
   scenario.topPain = getTopPainPoint(scenario);
+  scenario.voiceCount = countUserVoices(scenario);
   return scenario;
 }
 
 export function buildScenario(flatIndex) {
   const scenario = buildScenarioLight(flatIndex);
   const journey = journeyFor(scenario);
+  const frictions = (journey.journey?.steps || []).map((s) => s.friction).filter(Boolean);
+  const userVoices = matchUserVoices(
+    scenario,
+    { pains: journey.painPoints, frictions },
+    { limit: 5, minScore: 4 }
+  );
+  const capabilityHints = capabilityHintsForScenario(scenario, userVoices);
   return {
     ...scenario,
     journey,
     painPoints: journey.painPoints,
+    userVoices,
+    capabilityHints,
   };
 }
 

@@ -1,8 +1,8 @@
 {
   "name": "北美门前场景探索器",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "savedAt": "2026-07-03",
-  "description": "全维度门前场景枚举 + 情境旅程 + 可能问题展示",
+  "description": "全维度门前场景枚举 + 情境旅程 + 北美用户声音佐证",
   "totalCombinations": 80640,
   "dimensions": {
     "person": 14,
@@ -11,7 +11,7 @@
     "residential": 8,
     "event": 18
   },
-  "notes": "v1.3：故事拼装引擎、多维严格关联度、列表可能问题摘要、去除套话摩擦",
+  "notes": "v1.4：北美用户声音层（25条公开来源）+ 能力域线索匹配",
   "entryPoint": "index.html",
   "url": "https://derreckcoco.github.io/na-doorlock-scenario-explorer/",
   "files": [
@@ -23,6 +23,8 @@
     "js/journey-data.js",
     "js/journey-engine.js",
     "js/story-composer.js",
+    "js/user-voice-data.js",
+    "js/voice-matcher.js",
     "js/app.js"
   ]
 }
